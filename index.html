@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#c90018">
 <title>DIA CONFERÊNCIA - LOJA 226</title>
 <style>
 *{box-sizing:border-box}
@@ -14,28 +15,32 @@ header p{margin:7px 0 0;font-size:14px}
 main{padding:18px;max-width:650px;margin:auto}
 h2{font-size:21px;margin:10px 0 16px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:white;border:0;border-radius:15px;padding:20px 14px;text-align:left;box-shadow:0 2px 8px #0000000b;min-height:115px}
+.card{background:white;border:0;border-radius:15px;padding:18px 14px;text-align:left;box-shadow:0 2px 8px #0000000b;min-height:110px}
 .card strong{display:block;font-size:16px;margin:10px 0 5px}
 .card span{font-size:13px;color:#777}
 .emoji{font-size:27px}
-button{cursor:pointer}
+button{cursor:pointer;font:inherit}
 .primary{background:#c90018;color:white;border:0;border-radius:12px;padding:15px;width:100%;font-weight:bold;font-size:15px;margin-top:12px}
 .secondary{background:white;color:#c90018;border:1px solid #c90018;border-radius:12px;padding:13px;width:100%;font-weight:bold;margin-top:10px}
 input,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;background:white;font-size:16px;margin:6px 0 14px}
 label{font-size:13px;font-weight:bold}
 .panel{background:white;padding:17px;border-radius:15px;margin-bottom:14px}
-.hidden{display:none}
-.back{border:0;background:none;color:#c90018;font-size:15px;font-weight:bold;padding:8px 0}
+.hidden{display:none!important}
+.back{border:0;background:none;color:#c90018;font-size:15px;font-weight:bold;padding:8px 0 16px}
 .item{padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
-.small{font-size:12px;color:#777}
+.small{font-size:12px;color:#777;line-height:1.6}
 .stat{font-size:27px;font-weight:bold;color:#c90018}
+.folder{display:flex;align-items:center;gap:12px;width:100%;background:white;border:0;border-radius:13px;padding:17px;margin-bottom:10px;text-align:left}
+.folder .emoji{font-size:28px}
+.folder strong{display:block;margin-bottom:5px}
+.folder small{color:#777}
 footer{text-align:center;color:#999;font-size:12px;padding:25px}
 </style>
 </head>
 <body>
 <header>
 <h1>DIA CONFERÊNCIA</h1>
-<p>LOJA 226 • Controle de recebimento</p>
+<p>LOJA 226 • CONTROLE DE RECEBIMENTO</p>
 </header>
 
 <main>
@@ -43,14 +48,16 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 <h2>Olá, equipe! 👋</h2>
 <p class="small">O que você deseja fazer hoje?</p>
 <div class="grid">
-<button class="card" onclick="show('nova')"><div class="emoji">📋</div><strong>Nova conferência</strong><span>Iniciar recebimento</span></button>
-<button class="card" onclick="show('historico');historico()"><div class="emoji">🗂️</div><strong>Histórico</strong><span>Ver conferências</span></button>
-<button class="card" onclick="show('produtos');produtos()"><div class="emoji">📦</div><strong>Produtos</strong><span>Itens registrados</span></button>
-<button class="card" onclick="show('relatorios');relatorios()"><div class="emoji">📊</div><strong>Relatórios</strong><span>Exportar resultados</span></button>
+<button class="card" onclick="show('nova')"><div class="emoji">🧾</div><strong>Nova conferência</strong><span>Iniciar recebimento</span></button>
+<button class="card" onclick="show('notas');listarNotas()"><div class="emoji">📁</div><strong>Notas fiscais</strong><span>Pastas por nota</span></button>
+<button class="card" onclick="show('produtos');listarProdutos()"><div class="emoji">📦</div><strong>Produtos</strong><span>Itens registrados</span></button>
+<button class="card" onclick="show('relatorios');atualizarRelatorios()"><div class="emoji">📊</div><strong>Relatórios</strong><span>Exportar resultados</span></button>
 </div>
 <div class="panel" style="margin-top:18px">
 <p class="small">PRODUTOS REGISTRADOS</p>
 <div class="stat" id="totalHome">0</div>
+<p class="small">NOTAS FISCAIS</p>
+<div class="stat" id="notasHome">0</div>
 </div>
 </section>
 
@@ -58,11 +65,13 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 <button class="back" onclick="show('home')">← Voltar ao início</button>
 <h2>Nova conferência</h2>
 <div class="panel">
+<label>Nome do encarregado</label>
+<input id="encarregado" placeholder="Quem está conferindo?">
 <label>Número da nota fiscal</label>
-<input id="nota" placeholder="Ex.: 123456">
+<input id="nota" placeholder="Número da NF">
 <label>Fornecedor</label>
 <input id="fornecedor" placeholder="Nome do fornecedor">
-<label>Data</label>
+<label>Data do recebimento</label>
 <input id="data" type="date">
 </div>
 <h2>Adicionar produto</h2>
@@ -72,7 +81,7 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 <label>Descrição do produto</label>
 <input id="descricao" placeholder="Nome do produto">
 <label>Quantidade recebida</label>
-<input id="quantidade" type="number" min="0" placeholder="0">
+<input id="quantidade" type="number" min="0" step="any" placeholder="0">
 <label>Divergência</label>
 <select id="divergencia">
 <option value="Sem divergência">Sem divergência</option>
@@ -85,16 +94,28 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 <button class="primary" onclick="adicionar()">＋ Adicionar produto</button>
 </div>
 <div class="panel">
-<strong>Itens desta conferência</strong>
-<div id="itensNovos" class="small">Nenhum produto adicionado.</div>
+<strong>Produtos desta conferência</strong>
+<div id="itensNovos" class="small" style="margin-top:10px">Nenhum produto adicionado.</div>
 <button class="secondary" onclick="finalizar()">Finalizar conferência</button>
 </div>
 </section>
 
-<section id="historico" class="hidden">
+<section id="notas" class="hidden">
 <button class="back" onclick="show('home')">← Voltar ao início</button>
-<h2>Histórico</h2>
-<div id="listaHistorico"></div>
+<h2>📁 Arquivo de notas fiscais</h2>
+<p class="small">Cada nota fiscal possui sua própria pasta.</p>
+<div id="listaNotas"></div>
+</section>
+
+<section id="detalheNota" class="hidden">
+<button class="back" onclick="show('notas');listarNotas()">← Voltar às notas fiscais</button>
+<h2 id="tituloNota">Nota fiscal</h2>
+<div class="panel" id="dadosNota"></div>
+<div class="panel">
+<strong>Produtos da nota</strong>
+<div id="produtosNota"></div>
+</div>
+<button class="primary" onclick="exportarNota()">⬇ Exportar relatório desta nota</button>
 </section>
 
 <section id="produtos" class="hidden">
@@ -105,82 +126,158 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 
 <section id="relatorios" class="hidden">
 <button class="back" onclick="show('home')">← Voltar ao início</button>
-<h2>Relatórios</h2>
+<h2>Relatórios gerais</h2>
 <div class="panel">
 <p class="small">TOTAL DE PRODUTOS</p>
 <div class="stat" id="totalRel">0</div>
+<p class="small">TOTAL DE NOTAS FISCAIS</p>
+<div class="stat" id="notasRel">0</div>
 <p class="small">ITENS COM DIVERGÊNCIA</p>
 <div class="stat" id="divRel">0</div>
 </div>
-<button class="primary" onclick="exportar()">⬇ Exportar relatório CSV</button>
-<p class="small">O arquivo poderá ser compartilhado com a equipe pelo celular.</p>
+<button class="primary" onclick="exportarTudo()">⬇ Exportar relatório geral CSV</button>
+<p class="small">Você também pode abrir uma pasta de nota fiscal e exportar somente aquela nota.</p>
 </section>
 </main>
 <footer>DIA CONFERÊNCIA • LOJA 226</footer>
 
 <script>
+const CHAVE='produtos226';
 let dados=[];
-try{dados=JSON.parse(localStorage.getItem('produtos226')||'[]')}catch(e){dados=[]}
 let pendentes=[];
+let notaSelecionada='';
 
-function salvar(){localStorage.setItem('produtos226',JSON.stringify(dados));atualizar()}
-function atualizar(){document.getElementById('totalHome').textContent=dados.length}
+try{
+const salvo=JSON.parse(localStorage.getItem(CHAVE)||'[]');
+dados=Array.isArray(salvo)?salvo:[];
+}catch(e){dados=[]}
+
+function escapar(v){
+return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 function show(t){
-['home','nova','historico','produtos','relatorios'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+['home','nova','notas','detalheNota','produtos','relatorios'].forEach(x=>document.getElementById(x).classList.add('hidden'));
 document.getElementById(t).classList.remove('hidden');
 window.scrollTo(0,0);
 }
-function adicionar(){
-let nota=document.getElementById('nota').value.trim();
-let fornecedor=document.getElementById('fornecedor').value.trim();
-let data=document.getElementById('data').value;
-let codigo=document.getElementById('codigo').value.trim();
-let descricao=document.getElementById('descricao').value.trim();
-let quantidade=document.getElementById('quantidade').value;
-let divergencia=document.getElementById('divergencia').value;
-if(!nota||!fornecedor||!data||!descricao||quantidade===''){
-alert('Preencha nota fiscal, fornecedor, data, descrição e quantidade.');return;
+function salvar(){
+localStorage.setItem(CHAVE,JSON.stringify(dados));
+atualizar();
 }
-pendentes.push({nota,fornecedor,data,codigo,descricao,quantidade,divergencia});
+function gruposNotas(){
+const grupos={};
+dados.forEach(p=>{
+const chave=String(p.nota||'Sem número de nota');
+if(!grupos[chave])grupos[chave]=[];
+grupos[chave].push(p);
+});
+return grupos;
+}
+function atualizar(){
+document.getElementById('totalHome').textContent=dados.length;
+document.getElementById('notasHome').textContent=Object.keys(gruposNotas()).length;
+}
+function valor(id){return document.getElementById(id).value.trim()}
+
+function adicionar(){
+const encarregado=valor('encarregado');
+const nota=valor('nota');
+const fornecedor=valor('fornecedor');
+const data=valor('data');
+const codigo=valor('codigo');
+const descricao=valor('descricao');
+const quantidade=valor('quantidade');
+const divergencia=valor('divergencia');
+
+if(!encarregado||!nota||!fornecedor||!data||!descricao||quantidade===''){
+alert('Preencha encarregado, nota fiscal, fornecedor, data, descrição e quantidade.');
+return;
+}
+pendentes.push({encarregado,nota,fornecedor,data,codigo,descricao,quantidade,divergencia});
 document.getElementById('codigo').value='';
 document.getElementById('descricao').value='';
 document.getElementById('quantidade').value='';
 mostrarPendentes();
 }
 function mostrarPendentes(){
-document.getElementById('itensNovos').innerHTML=pendentes.length?pendentes.map((p,i)=>`<div class="item">${p.descricao} — Qtd: ${p.quantidade}<br><span class="small">${p.divergencia}</span> <button onclick="removerPendente(${i})">Excluir</button></div>`).join(''):'Nenhum produto adicionado.';
+document.getElementById('itensNovos').innerHTML=pendentes.length?
+pendentes.map((p,i)=>`<div class="item"><strong>${escapar(p.descricao)}</strong><br>Quantidade: ${escapar(p.quantidade)}<br><span class="small">${escapar(p.divergencia)}</span><br><button onclick="removerPendente(${i})">Excluir</button></div>`).join(''):
+'Nenhum produto adicionado.';
 }
-function removerPendente(i){pendentes.splice(i,1);mostrarPendentes()}
+function removerPendente(i){
+pendentes.splice(i,1);
+mostrarPendentes();
+}
 function finalizar(){
-if(!pendentes.length){alert('Adicione pelo menos um produto.');return}
-dados.push(...pendentes);salvar();pendentes=[];
+if(!pendentes.length){alert('Adicione pelo menos um produto.');return;}
+dados.push(...pendentes);
+salvar();
+pendentes=[];
 document.getElementById('itensNovos').textContent='Nenhum produto adicionado.';
-['nota','fornecedor','data'].forEach(x=>document.getElementById(x).value='');
+['encarregado','nota','fornecedor','data'].forEach(x=>document.getElementById(x).value='');
 alert('Conferência salva neste celular!');
 show('home');
 }
-function produtos(){
-document.getElementById('listaProdutos').innerHTML=dados.length?dados.map(p=>`<div class="panel"><strong>${p.descricao||'Produto'}</strong><p class="small">Nota: ${p.nota||'-'} • Código: ${p.codigo||'-'}<br>Quantidade: ${p.quantidade||'-'}<br>Divergência: ${p.divergencia||'-'}</p></div>`).join(''):'Nenhum produto registrado.';
+
+function listarNotas(){
+const grupos=gruposNotas();
+const chaves=Object.keys(grupos);
+document.getElementById('listaNotas').innerHTML=chaves.length?
+chaves.map(n=>{
+const p=grupos[n][0];
+return `<button class="folder" onclick="abrirNota('${escapar(n).replace(/'/g,"\\'")}')">
+<span class="emoji">📁</span><span><strong>Nota fiscal: ${escapar(n)}</strong><small>${escapar(p.fornecedor||'Fornecedor não informado')}<br>${grupos[n].length} produto(s) • ${escapar(p.data||'Sem data')}</small></span></button>`;
+}).join(''):
+'<div class="panel">Nenhuma nota fiscal cadastrada.</div>';
 }
-function historico(){
-let grupos={};
-dados.forEach(p=>{let k=(p.nota||'-')+'|'+(p.fornecedor||'-')+'|'+(p.data||'-');grupos[k]=(grupos[k]||0)+1});
-let chaves=Object.keys(grupos);
-document.getElementById('listaHistorico').innerHTML=chaves.length?chaves.map(k=>{let a=k.split('|');return `<div class="panel"><strong>Nota fiscal: ${a[0]}</strong><p class="small">Fornecedor: ${a[1]}<br>Data: ${a[2]}<br>Produtos: ${grupos[k]}</p></div>`}).join(''):'Nenhuma conferência registrada.';
+function abrirNota(n){
+notaSelecionada=n;
+const itens=gruposNotas()[n]||[];
+const p=itens[0]||{};
+document.getElementById('tituloNota').textContent='Nota fiscal: '+n;
+document.getElementById('dadosNota').innerHTML=
+`<strong>Fornecedor:</strong> ${escapar(p.fornecedor||'-')}<br>
+<strong>Data:</strong> ${escapar(p.data||'-')}<br>
+<strong>Encarregado:</strong> ${escapar(p.encarregado||'Não informado')}<br>
+<strong>Total de produtos:</strong> ${itens.length}`;
+document.getElementById('produtosNota').innerHTML=itens.map(x=>
+`<div class="item"><strong>${escapar(x.descricao)}</strong><br>
+Código: ${escapar(x.codigo||'-')}<br>
+Quantidade: ${escapar(x.quantidade)}<br>
+Divergência: ${escapar(x.divergencia||'-')}</div>`).join('');
+show('detalheNota');
 }
-function relatorios(){
+function listarProdutos(){
+document.getElementById('listaProdutos').innerHTML=dados.length?
+dados.map(p=>`<div class="panel"><strong>${escapar(p.descricao||'Produto')}</strong><p class="small">Nota: ${escapar(p.nota||'-')}<br>Fornecedor: ${escapar(p.fornecedor||'-')}<br>Quantidade: ${escapar(p.quantidade||'-')}<br>Divergência: ${escapar(p.divergencia||'-')}<br>Encarregado: ${escapar(p.encarregado||'Não informado')}</p></div>`).join(''):
+'<div class="panel">Nenhum produto registrado.</div>';
+}
+function atualizarRelatorios(){
 document.getElementById('totalRel').textContent=dados.length;
+document.getElementById('notasRel').textContent=Object.keys(gruposNotas()).length;
 document.getElementById('divRel').textContent=dados.filter(p=>p.divergencia&&p.divergencia!=='Sem divergência').length;
 }
-function exportar(){
-if(!dados.length){alert('Não há produtos para exportar.');return}
-let col=['Nota fiscal','Fornecedor','Data','Código','Descrição','Quantidade','Divergência'];
-let linhas=dados.map(p=>[p.nota,p.fornecedor,p.data,p.codigo,p.descricao,p.quantidade,p.divergencia]);
-let csv='\uFEFF'+[col,...linhas].map(l=>l.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');
-let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-let url=URL.createObjectURL(blob);
-let a=document.createElement('a');a.href=url;a.download='conferencia_loja226.csv';a.click();
-URL.revokeObjectURL(url);
+function baixarCSV(itens,nome){
+if(!itens.length){alert('Não há produtos para exportar.');return;}
+const col=['Nota fiscal','Fornecedor','Data','Encarregado','Código','Descrição','Quantidade','Divergência'];
+const linhas=itens.map(p=>[p.nota,p.fornecedor,p.data,p.encarregado||'Não informado',p.codigo,p.descricao,p.quantidade,p.divergencia]);
+const csv='\uFEFF'+[col,...linhas].map(l=>l.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');
+const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download=nome;
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportarNota(){
+const itens=(gruposNotas()[notaSelecionada]||[]);
+baixarCSV(itens,'nota_fiscal_'+notaSelecionada.replace(/[^a-zA-Z0-9_-]/g,'_')+'.csv');
+}
+function exportarTudo(){
+baixarCSV(dados,'relatorio_geral_loja226.csv');
 }
 atualizar();
 </script>
