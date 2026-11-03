@@ -30,20 +30,24 @@ label{font-size:13px;font-weight:bold}
 .item{padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
 .small{font-size:12px;color:#777;line-height:1.6}
 .stat{font-size:27px;font-weight:bold;color:#c90018}
-.folder{display:flex;align-items:center;gap:12px;width:100%;background:white;border:0;border-radius:13px;padding:17px;margin-bottom:10px;text-align:left}
-.folder .emoji{font-size:28px}
-.folder strong{display:block;margin-bottom:5px}
-.folder small{color:#777}
+.folder{display:flex;align-items:center;gap:10px;background:white;border-radius:13px;padding:13px;margin-bottom:10px}
+.folder-info{display:flex;align-items:center;gap:12px;flex:1;min-width:0;border:0;background:none;text-align:left;padding:4px}
+.folder-info strong{display:block;margin-bottom:5px}
+.folder-info small{color:#777}
+.delete{background:#fff0f0;color:#c90018;border:1px solid #f1c5ca;border-radius:9px;padding:10px;font-weight:bold;font-size:13px}
+.delete:hover{background:#ffe0e0}
 footer{text-align:center;color:#999;font-size:12px;padding:25px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>DIA CONFERÊNCIA</h1>
 <p>LOJA 226 • CONTROLE DE RECEBIMENTO</p>
 </header>
 
 <main>
+
 <section id="home">
 <h2>Olá, equipe! 👋</h2>
 <p class="small">O que você deseja fazer hoje?</p>
@@ -138,6 +142,7 @@ footer{text-align:center;color:#999;font-size:12px;padding:25px}
 <button class="primary" onclick="exportarTudo()">⬇ Exportar relatório geral CSV</button>
 <p class="small">Você também pode abrir uma pasta de nota fiscal e exportar somente aquela nota.</p>
 </section>
+
 </main>
 <footer>DIA CONFERÊNCIA • LOJA 226</footer>
 
@@ -146,6 +151,7 @@ const CHAVE='produtos226';
 let dados=[];
 let pendentes=[];
 let notaSelecionada='';
+let notasVisiveis=[];
 
 try{
 const salvo=JSON.parse(localStorage.getItem(CHAVE)||'[]');
@@ -155,15 +161,18 @@ dados=Array.isArray(salvo)?salvo:[];
 function escapar(v){
 return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+
 function show(t){
 ['home','nova','notas','detalheNota','produtos','relatorios'].forEach(x=>document.getElementById(x).classList.add('hidden'));
 document.getElementById(t).classList.remove('hidden');
 window.scrollTo(0,0);
 }
+
 function salvar(){
 localStorage.setItem(CHAVE,JSON.stringify(dados));
 atualizar();
 }
+
 function gruposNotas(){
 const grupos={};
 dados.forEach(p=>{
@@ -173,11 +182,15 @@ grupos[chave].push(p);
 });
 return grupos;
 }
+
 function atualizar(){
 document.getElementById('totalHome').textContent=dados.length;
 document.getElementById('notasHome').textContent=Object.keys(gruposNotas()).length;
 }
-function valor(id){return document.getElementById(id).value.trim()}
+
+function valor(id){
+return document.getElementById(id).value.trim();
+}
 
 function adicionar(){
 const encarregado=valor('encarregado');
@@ -193,23 +206,38 @@ if(!encarregado||!nota||!fornecedor||!data||!descricao||quantidade===''){
 alert('Preencha encarregado, nota fiscal, fornecedor, data, descrição e quantidade.');
 return;
 }
+
 pendentes.push({encarregado,nota,fornecedor,data,codigo,descricao,quantidade,divergencia});
+
 document.getElementById('codigo').value='';
 document.getElementById('descricao').value='';
 document.getElementById('quantidade').value='';
 mostrarPendentes();
 }
+
 function mostrarPendentes(){
 document.getElementById('itensNovos').innerHTML=pendentes.length?
-pendentes.map((p,i)=>`<div class="item"><strong>${escapar(p.descricao)}</strong><br>Quantidade: ${escapar(p.quantidade)}<br><span class="small">${escapar(p.divergencia)}</span><br><button onclick="removerPendente(${i})">Excluir</button></div>`).join(''):
+pendentes.map((p,i)=>`
+<div class="item">
+<strong>${escapar(p.descricao)}</strong><br>
+Quantidade: ${escapar(p.quantidade)}<br>
+<span class="small">${escapar(p.divergencia)}</span><br>
+<button class="delete" onclick="removerPendente(${i})">🗑 Excluir</button>
+</div>`).join(''):
 'Nenhum produto adicionado.';
 }
+
 function removerPendente(i){
+if(!confirm('Deseja excluir este produto antes de finalizar?'))return;
 pendentes.splice(i,1);
 mostrarPendentes();
 }
+
 function finalizar(){
-if(!pendentes.length){alert('Adicione pelo menos um produto.');return;}
+if(!pendentes.length){
+alert('Adicione pelo menos um produto.');
+return;
+}
 dados.push(...pendentes);
 salvar();
 pendentes=[];
@@ -221,47 +249,132 @@ show('home');
 
 function listarNotas(){
 const grupos=gruposNotas();
-const chaves=Object.keys(grupos);
-document.getElementById('listaNotas').innerHTML=chaves.length?
-chaves.map(n=>{
+notasVisiveis=Object.keys(grupos);
+
+document.getElementById('listaNotas').innerHTML=notasVisiveis.length?
+notasVisiveis.map((n,i)=>{
 const p=grupos[n][0];
-return `<button class="folder" onclick="abrirNota('${escapar(n).replace(/'/g,"\\'")}')">
-<span class="emoji">📁</span><span><strong>Nota fiscal: ${escapar(n)}</strong><small>${escapar(p.fornecedor||'Fornecedor não informado')}<br>${grupos[n].length} produto(s) • ${escapar(p.data||'Sem data')}</small></span></button>`;
+return `
+<div class="folder">
+<button class="folder-info" onclick="abrirNotaPorIndice(${i})">
+<span class="emoji">📁</span>
+<span>
+<strong>Nota fiscal: ${escapar(n)}</strong>
+<small>${escapar(p.fornecedor||'Fornecedor não informado')}<br>
+${grupos[n].length} produto(s) • ${escapar(p.data||'Sem data')}</small>
+</span>
+</button>
+<button class="delete" onclick="excluirNota(${i})">🗑 Excluir</button>
+</div>`;
 }).join(''):
 '<div class="panel">Nenhuma nota fiscal cadastrada.</div>';
 }
+
+function abrirNotaPorIndice(i){
+const n=notasVisiveis[i];
+if(n!==undefined)abrirNota(n);
+}
+
+function excluirNota(i){
+const n=notasVisiveis[i];
+if(n===undefined)return;
+
+const total=(gruposNotas()[n]||[]).length;
+
+if(!confirm('ATENÇÃO!\n\nDeseja realmente excluir a nota fiscal '+n+' e todos os seus '+total+' produto(s)?\n\nEssa ação não poderá ser desfeita.'))return;
+
+dados=dados.filter(p=>String(p.nota||'Sem número de nota')!==n);
+salvar();
+listarNotas();
+alert('Nota fiscal excluída com sucesso!');
+}
+
 function abrirNota(n){
 notaSelecionada=n;
 const itens=gruposNotas()[n]||[];
 const p=itens[0]||{};
+
 document.getElementById('tituloNota').textContent='Nota fiscal: '+n;
+
 document.getElementById('dadosNota').innerHTML=
 `<strong>Fornecedor:</strong> ${escapar(p.fornecedor||'-')}<br>
 <strong>Data:</strong> ${escapar(p.data||'-')}<br>
 <strong>Encarregado:</strong> ${escapar(p.encarregado||'Não informado')}<br>
 <strong>Total de produtos:</strong> ${itens.length}`;
-document.getElementById('produtosNota').innerHTML=itens.map(x=>
-`<div class="item"><strong>${escapar(x.descricao)}</strong><br>
-Código: ${escapar(x.codigo||'-')}<br>
-Quantidade: ${escapar(x.quantidade)}<br>
-Divergência: ${escapar(x.divergencia||'-')}</div>`).join('');
+
+document.getElementById('produtosNota').innerHTML=itens.length?
+dados.map((x,i)=>({produto:x,indice:i}))
+.filter(x=>String(x.produto.nota||'Sem número de nota')===String(n))
+.map(x=>`
+<div class="item">
+<strong>${escapar(x.produto.descricao)}</strong><br>
+Código: ${escapar(x.produto.codigo||'-')}<br>
+Quantidade: ${escapar(x.produto.quantidade)}<br>
+Divergência: ${escapar(x.produto.divergencia||'-')}<br>
+<button class="delete" onclick="excluirProduto(${x.indice},'nota')">🗑 Excluir produto</button>
+</div>`).join(''):
+'Nenhum produto nesta nota.';
+
 show('detalheNota');
 }
+
+function excluirProduto(i,origem){
+if(!dados[i])return;
+
+const nome=dados[i].descricao||'este produto';
+
+if(!confirm('Deseja realmente excluir "'+nome+'"?'))return;
+
+dados.splice(i,1);
+salvar();
+
+if(origem==='nota'){
+if(gruposNotas()[notaSelecionada]){
+abrirNota(notaSelecionada);
+}else{
+show('notas');
+listarNotas();
+}
+}else{
+listarProdutos();
+}
+
+alert('Produto excluído com sucesso!');
+}
+
 function listarProdutos(){
 document.getElementById('listaProdutos').innerHTML=dados.length?
-dados.map(p=>`<div class="panel"><strong>${escapar(p.descricao||'Produto')}</strong><p class="small">Nota: ${escapar(p.nota||'-')}<br>Fornecedor: ${escapar(p.fornecedor||'-')}<br>Quantidade: ${escapar(p.quantidade||'-')}<br>Divergência: ${escapar(p.divergencia||'-')}<br>Encarregado: ${escapar(p.encarregado||'Não informado')}</p></div>`).join(''):
+dados.map((p,i)=>`
+<div class="panel">
+<strong>${escapar(p.descricao||'Produto')}</strong>
+<p class="small">
+Nota: ${escapar(p.nota||'-')}<br>
+Fornecedor: ${escapar(p.fornecedor||'-')}<br>
+Quantidade: ${escapar(p.quantidade||'-')}<br>
+Divergência: ${escapar(p.divergencia||'-')}<br>
+Encarregado: ${escapar(p.encarregado||'Não informado')}
+</p>
+<button class="delete" onclick="excluirProduto(${i},'produtos')">🗑 Excluir produto</button>
+</div>`).join(''):
 '<div class="panel">Nenhum produto registrado.</div>';
 }
+
 function atualizarRelatorios(){
 document.getElementById('totalRel').textContent=dados.length;
 document.getElementById('notasRel').textContent=Object.keys(gruposNotas()).length;
 document.getElementById('divRel').textContent=dados.filter(p=>p.divergencia&&p.divergencia!=='Sem divergência').length;
 }
+
 function baixarCSV(itens,nome){
-if(!itens.length){alert('Não há produtos para exportar.');return;}
+if(!itens.length){
+alert('Não há produtos para exportar.');
+return;
+}
+
 const col=['Nota fiscal','Fornecedor','Data','Encarregado','Código','Descrição','Quantidade','Divergência'];
 const linhas=itens.map(p=>[p.nota,p.fornecedor,p.data,p.encarregado||'Não informado',p.codigo,p.descricao,p.quantidade,p.divergencia]);
 const csv='\uFEFF'+[col,...linhas].map(l=>l.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');
+
 const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
 const url=URL.createObjectURL(blob);
 const a=document.createElement('a');
@@ -272,13 +385,16 @@ a.click();
 a.remove();
 setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+
 function exportarNota(){
-const itens=(gruposNotas()[notaSelecionada]||[]);
+const itens=gruposNotas()[notaSelecionada]||[];
 baixarCSV(itens,'nota_fiscal_'+notaSelecionada.replace(/[^a-zA-Z0-9_-]/g,'_')+'.csv');
 }
+
 function exportarTudo(){
 baixarCSV(dados,'relatorio_geral_loja226.csv');
 }
+
 atualizar();
 </script>
 </body>
