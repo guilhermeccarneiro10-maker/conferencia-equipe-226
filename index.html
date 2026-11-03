@@ -1,199 +1,188 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#d71920">
-  <title>DIA CONFERÊNCIA - LOJA 226</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 20px;
-    }
-
-    header {
-      background: #d71920;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 12px;
-    }
-
-    .card {
-      background: white;
-      padding: 18px;
-      margin-top: 18px;
-      border-radius: 12px;
-    }
-
-    input, button {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 13px;
-      margin: 7px 0;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    input {
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background: #d71920;
-      color: white;
-      border: none;
-      font-weight: bold;
-    }
-
-    .produto {
-      border-bottom: 1px solid #ddd;
-      padding: 12px 0;
-    }
-
-    .secundario {
-      background: #333;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIA CONFERÊNCIA - LOJA 226</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f5f7;color:#252525;font-family:Arial,sans-serif}
+header{background:#c90018;color:white;padding:24px 20px;border-radius:0 0 22px 22px}
+header h1{margin:0;font-size:24px}
+header p{margin:7px 0 0;font-size:14px}
+main{padding:18px;max-width:650px;margin:auto}
+h2{font-size:21px;margin:10px 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:white;border:0;border-radius:15px;padding:20px 14px;text-align:left;box-shadow:0 2px 8px #0000000b;min-height:115px}
+.card strong{display:block;font-size:16px;margin:10px 0 5px}
+.card span{font-size:13px;color:#777}
+.emoji{font-size:27px}
+button{cursor:pointer}
+.primary{background:#c90018;color:white;border:0;border-radius:12px;padding:15px;width:100%;font-weight:bold;font-size:15px;margin-top:12px}
+.secondary{background:white;color:#c90018;border:1px solid #c90018;border-radius:12px;padding:13px;width:100%;font-weight:bold;margin-top:10px}
+input,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;background:white;font-size:16px;margin:6px 0 14px}
+label{font-size:13px;font-weight:bold}
+.panel{background:white;padding:17px;border-radius:15px;margin-bottom:14px}
+.hidden{display:none}
+.back{border:0;background:none;color:#c90018;font-size:15px;font-weight:bold;padding:8px 0}
+.item{padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
+.small{font-size:12px;color:#777}
+.stat{font-size:27px;font-weight:bold;color:#c90018}
+footer{text-align:center;color:#999;font-size:12px;padding:25px}
+</style>
 </head>
-
 <body>
-
 <header>
-  <h1>DIA CONFERÊNCIA</h1>
-  <h2>LOJA 226</h2>
-  <p>Conferência de recebimento</p>
+<h1>DIA CONFERÊNCIA</h1>
+<p>LOJA 226 • Controle de recebimento</p>
 </header>
 
-<div class="card">
-  <h3>Dados do recebimento</h3>
-
-  <input id="nota" placeholder="Número da nota fiscal">
-  <input id="fornecedor" placeholder="Nome do fornecedor">
-  <input id="data" type="date">
+<main>
+<section id="home">
+<h2>Olá, equipe! 👋</h2>
+<p class="small">O que você deseja fazer hoje?</p>
+<div class="grid">
+<button class="card" onclick="show('nova')"><div class="emoji">📋</div><strong>Nova conferência</strong><span>Iniciar recebimento</span></button>
+<button class="card" onclick="show('historico');historico()"><div class="emoji">🗂️</div><strong>Histórico</strong><span>Ver conferências</span></button>
+<button class="card" onclick="show('produtos');produtos()"><div class="emoji">📦</div><strong>Produtos</strong><span>Itens registrados</span></button>
+<button class="card" onclick="show('relatorios');relatorios()"><div class="emoji">📊</div><strong>Relatórios</strong><span>Exportar resultados</span></button>
 </div>
-
-<div class="card">
-  <h3>Cadastrar produto</h3>
-
-  <input id="codigo" placeholder="Código de barras">
-  <input id="descricao" placeholder="Descrição do produto">
-  <input id="quantidade" type="number" min="0" placeholder="Quantidade recebida">
-  <input id="divergencia" placeholder="Divergência (se houver)">
-
-  <button onclick="adicionar()">ADICIONAR PRODUTO</button>
+<div class="panel" style="margin-top:18px">
+<p class="small">PRODUTOS REGISTRADOS</p>
+<div class="stat" id="totalHome">0</div>
 </div>
+</section>
 
-<div class="card">
-  <h3>Produtos conferidos</h3>
-  <div id="lista"></div>
-  <h3 id="total">Total de produtos: 0</h3>
-
-  <button class="secundario" onclick="exportar()">EXPORTAR RELATÓRIO</button>
+<section id="nova" class="hidden">
+<button class="back" onclick="show('home')">← Voltar ao início</button>
+<h2>Nova conferência</h2>
+<div class="panel">
+<label>Número da nota fiscal</label>
+<input id="nota" placeholder="Ex.: 123456">
+<label>Fornecedor</label>
+<input id="fornecedor" placeholder="Nome do fornecedor">
+<label>Data</label>
+<input id="data" type="date">
 </div>
+<h2>Adicionar produto</h2>
+<div class="panel">
+<label>Código do produto</label>
+<input id="codigo" placeholder="Código">
+<label>Descrição do produto</label>
+<input id="descricao" placeholder="Nome do produto">
+<label>Quantidade recebida</label>
+<input id="quantidade" type="number" min="0" placeholder="0">
+<label>Divergência</label>
+<select id="divergencia">
+<option value="Sem divergência">Sem divergência</option>
+<option value="Falta">Falta</option>
+<option value="Sobra">Sobra</option>
+<option value="Avaria">Avaria</option>
+<option value="Validade">Validade</option>
+<option value="Outro">Outro</option>
+</select>
+<button class="primary" onclick="adicionar()">＋ Adicionar produto</button>
+</div>
+<div class="panel">
+<strong>Itens desta conferência</strong>
+<div id="itensNovos" class="small">Nenhum produto adicionado.</div>
+<button class="secondary" onclick="finalizar()">Finalizar conferência</button>
+</div>
+</section>
+
+<section id="historico" class="hidden">
+<button class="back" onclick="show('home')">← Voltar ao início</button>
+<h2>Histórico</h2>
+<div id="listaHistorico"></div>
+</section>
+
+<section id="produtos" class="hidden">
+<button class="back" onclick="show('home')">← Voltar ao início</button>
+<h2>Produtos registrados</h2>
+<div id="listaProdutos"></div>
+</section>
+
+<section id="relatorios" class="hidden">
+<button class="back" onclick="show('home')">← Voltar ao início</button>
+<h2>Relatórios</h2>
+<div class="panel">
+<p class="small">TOTAL DE PRODUTOS</p>
+<div class="stat" id="totalRel">0</div>
+<p class="small">ITENS COM DIVERGÊNCIA</p>
+<div class="stat" id="divRel">0</div>
+</div>
+<button class="primary" onclick="exportar()">⬇ Exportar relatório CSV</button>
+<p class="small">O arquivo poderá ser compartilhado com a equipe pelo celular.</p>
+</section>
+</main>
+<footer>DIA CONFERÊNCIA • LOJA 226</footer>
 
 <script>
-  let produtos = JSON.parse(localStorage.getItem("produtos226") || "[]");
+let dados=[];
+try{dados=JSON.parse(localStorage.getItem('produtos226')||'[]')}catch(e){dados=[]}
+let pendentes=[];
 
-  function salvar() {
-    localStorage.setItem("produtos226", JSON.stringify(produtos));
-  }
-
-  function adicionar() {
-    const codigo = document.getElementById("codigo").value.trim();
-    const descricao = document.getElementById("descricao").value.trim();
-    const quantidade = document.getElementById("quantidade").value;
-    const divergencia = document.getElementById("divergencia").value.trim();
-
-    if (!codigo || !descricao || quantidade === "" || Number(quantidade) < 0) {
-      alert("Preencha o código, a descrição e uma quantidade válida.");
-      return;
-    }
-
-    produtos.push({
-      nota: document.getElementById("nota").value,
-      fornecedor: document.getElementById("fornecedor").value,
-      data: document.getElementById("data").value,
-      codigo,
-      descricao,
-      quantidade,
-      divergencia
-    });
-
-    salvar();
-    mostrar();
-
-    document.getElementById("codigo").value = "";
-    document.getElementById("descricao").value = "";
-    document.getElementById("quantidade").value = "";
-    document.getElementById("divergencia").value = "";
-  }
-
-  function mostrar() {
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
-
-    produtos.forEach((p, i) => {
-      const item = document.createElement("div");
-      item.className = "produto";
-
-      const titulo = document.createElement("strong");
-      titulo.textContent = p.descricao;
-
-      const detalhes = document.createElement("p");
-      detalhes.textContent = "Código: " + p.codigo +
-        " | Quantidade: " + p.quantidade +
-        " | Divergência: " + (p.divergencia || "Nenhuma");
-
-      const excluir = document.createElement("button");
-      excluir.className = "secundario";
-      excluir.textContent = "Excluir";
-      excluir.onclick = () => {
-        produtos.splice(i, 1);
-        salvar();
-        mostrar();
-      };
-
-      item.append(titulo, detalhes, excluir);
-      lista.appendChild(item);
-    });
-
-    document.getElementById("total").textContent =
-      "Total de produtos: " + produtos.length;
-  }
-
-  function exportar() {
-    if (!produtos.length) {
-      alert("Não existem produtos cadastrados.");
-      return;
-    }
-
-    const linhas = [
-      ["Nota fiscal", "Fornecedor", "Data", "Código", "Descrição", "Quantidade", "Divergência"],
-      ...produtos.map(p => [
-        p.nota, p.fornecedor, p.data, p.codigo,
-        p.descricao, p.quantidade, p.divergencia
-      ])
-    ];
-
-    const csv = "\uFEFF" + linhas.map(linha =>
-      linha.map(v => '"' + String(v ?? "").replace(/"/g, '""') + '"').join(";")
-    ).join("\n");
-
-    const arquivo = new Blob([csv], {type: "text/csv;charset=utf-8;"});
-    const url = URL.createObjectURL(arquivo);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "conferencia_loja226.csv";
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  mostrar();
+function salvar(){localStorage.setItem('produtos226',JSON.stringify(dados));atualizar()}
+function atualizar(){document.getElementById('totalHome').textContent=dados.length}
+function show(t){
+['home','nova','historico','produtos','relatorios'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+document.getElementById(t).classList.remove('hidden');
+window.scrollTo(0,0);
+}
+function adicionar(){
+let nota=document.getElementById('nota').value.trim();
+let fornecedor=document.getElementById('fornecedor').value.trim();
+let data=document.getElementById('data').value;
+let codigo=document.getElementById('codigo').value.trim();
+let descricao=document.getElementById('descricao').value.trim();
+let quantidade=document.getElementById('quantidade').value;
+let divergencia=document.getElementById('divergencia').value;
+if(!nota||!fornecedor||!data||!descricao||quantidade===''){
+alert('Preencha nota fiscal, fornecedor, data, descrição e quantidade.');return;
+}
+pendentes.push({nota,fornecedor,data,codigo,descricao,quantidade,divergencia});
+document.getElementById('codigo').value='';
+document.getElementById('descricao').value='';
+document.getElementById('quantidade').value='';
+mostrarPendentes();
+}
+function mostrarPendentes(){
+document.getElementById('itensNovos').innerHTML=pendentes.length?pendentes.map((p,i)=>`<div class="item">${p.descricao} — Qtd: ${p.quantidade}<br><span class="small">${p.divergencia}</span> <button onclick="removerPendente(${i})">Excluir</button></div>`).join(''):'Nenhum produto adicionado.';
+}
+function removerPendente(i){pendentes.splice(i,1);mostrarPendentes()}
+function finalizar(){
+if(!pendentes.length){alert('Adicione pelo menos um produto.');return}
+dados.push(...pendentes);salvar();pendentes=[];
+document.getElementById('itensNovos').textContent='Nenhum produto adicionado.';
+['nota','fornecedor','data'].forEach(x=>document.getElementById(x).value='');
+alert('Conferência salva neste celular!');
+show('home');
+}
+function produtos(){
+document.getElementById('listaProdutos').innerHTML=dados.length?dados.map(p=>`<div class="panel"><strong>${p.descricao||'Produto'}</strong><p class="small">Nota: ${p.nota||'-'} • Código: ${p.codigo||'-'}<br>Quantidade: ${p.quantidade||'-'}<br>Divergência: ${p.divergencia||'-'}</p></div>`).join(''):'Nenhum produto registrado.';
+}
+function historico(){
+let grupos={};
+dados.forEach(p=>{let k=(p.nota||'-')+'|'+(p.fornecedor||'-')+'|'+(p.data||'-');grupos[k]=(grupos[k]||0)+1});
+let chaves=Object.keys(grupos);
+document.getElementById('listaHistorico').innerHTML=chaves.length?chaves.map(k=>{let a=k.split('|');return `<div class="panel"><strong>Nota fiscal: ${a[0]}</strong><p class="small">Fornecedor: ${a[1]}<br>Data: ${a[2]}<br>Produtos: ${grupos[k]}</p></div>`}).join(''):'Nenhuma conferência registrada.';
+}
+function relatorios(){
+document.getElementById('totalRel').textContent=dados.length;
+document.getElementById('divRel').textContent=dados.filter(p=>p.divergencia&&p.divergencia!=='Sem divergência').length;
+}
+function exportar(){
+if(!dados.length){alert('Não há produtos para exportar.');return}
+let col=['Nota fiscal','Fornecedor','Data','Código','Descrição','Quantidade','Divergência'];
+let linhas=dados.map(p=>[p.nota,p.fornecedor,p.data,p.codigo,p.descricao,p.quantidade,p.divergencia]);
+let csv='\uFEFF'+[col,...linhas].map(l=>l.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');
+let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+let url=URL.createObjectURL(blob);
+let a=document.createElement('a');a.href=url;a.download='conferencia_loja226.csv';a.click();
+URL.revokeObjectURL(url);
+}
+atualizar();
 </script>
-
 </body>
 </html>
