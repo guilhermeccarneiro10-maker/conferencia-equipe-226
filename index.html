@@ -9,30 +9,30 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f4f5f7;color:#252525;font-family:Arial,sans-serif}
-header{background:#c90018;color:#fff;padding:24px 20px;border-radius:0 0 22px 22px}
+header{background:#c90018;color:white;padding:24px 20px;border-radius:0 0 22px 22px}
 header h1{margin:0;font-size:24px}
 header p{margin:7px 0 0;font-size:14px}
 main{padding:18px;max-width:680px;margin:auto}
 h2{font-size:21px;margin:10px 0 16px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#fff;border:0;border-radius:15px;padding:18px 14px;text-align:left;box-shadow:0 2px 8px #0000000b;min-height:110px}
+.card{background:white;border:0;border-radius:15px;padding:18px 14px;text-align:left;box-shadow:0 2px 8px #0000000b;min-height:110px}
 .card strong{display:block;font-size:16px;margin:10px 0 5px}
 .card span{font-size:13px;color:#777}
 .emoji{font-size:27px}
 button{cursor:pointer;font:inherit}
-.primary{background:#c90018;color:#fff;border:0;border-radius:12px;padding:15px;width:100%;font-weight:bold;font-size:15px;margin-top:12px}
-.secondary{background:#fff;color:#c90018;border:1px solid #c90018;border-radius:12px;padding:13px;width:100%;font-weight:bold;margin-top:10px}
-.danger{background:#fff;color:#b00018;border:1px solid #b00018;border-radius:9px;padding:8px 10px;margin:5px 5px 0 0;font-size:13px}
-.edit{background:#fff;color:#333;border:1px solid #bbb;border-radius:9px;padding:8px 10px;margin:5px 5px 0 0;font-size:13px}
-input,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;background:#fff;font-size:16px;margin:6px 0 14px}
+.primary{background:#c90018;color:white;border:0;border-radius:12px;padding:15px;width:100%;font-weight:bold;font-size:15px;margin-top:12px}
+.secondary{background:white;color:#c90018;border:1px solid #c90018;border-radius:12px;padding:13px;width:100%;font-weight:bold;margin-top:10px}
+.danger{background:white;color:#b00018;border:1px solid #b00018;border-radius:9px;padding:8px 10px;margin:5px 5px 0 0;font-size:13px}
+.edit{background:white;color:#333;border:1px solid #bbb;border-radius:9px;padding:8px 10px;margin:5px 5px 0 0;font-size:13px}
+input,select{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;background:white;font-size:16px;margin:6px 0 14px}
 label{font-size:13px;font-weight:bold}
-.panel{background:#fff;padding:17px;border-radius:15px;margin-bottom:14px}
+.panel{background:white;padding:17px;border-radius:15px;margin-bottom:14px}
 .hidden{display:none!important}
 .back{border:0;background:none;color:#c90018;font-size:15px;font-weight:bold;padding:8px 0 16px}
 .item{padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
 .small{font-size:12px;color:#777;line-height:1.6}
 .stat{font-size:27px;font-weight:bold;color:#c90018}
-.folder{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:0;border-radius:13px;padding:17px;margin-bottom:10px;text-align:left}
+.folder{display:flex;align-items:center;gap:12px;width:100%;background:white;border:0;border-radius:13px;padding:17px;margin-bottom:10px;text-align:left}
 .folder .emoji{font-size:28px}
 .folder strong{display:block;margin-bottom:5px}
 .folder small{color:#777}
@@ -60,7 +60,7 @@ canvas{max-width:100%}
 <button class="card" onclick="show('notas');listarNotas()"><div class="emoji">📁</div><strong>Notas fiscais</strong><span>Pastas por nota</span></button>
 <button class="card" onclick="show('produtos');listarProdutos()"><div class="emoji">📦</div><strong>Produtos</strong><span>Itens registrados</span></button>
 <button class="card" onclick="show('relatorios');atualizarRelatorios()"><div class="emoji">📊</div><strong>Relatórios</strong><span>Exportar resultados</span></button>
-<button class="card" onclick="show('devolucoes');listarDevolucoes()"><div class="emoji">📤</div><strong>Devoluções</strong><span>Registrar produtos para devolução</span></button>
+<button class="card" onclick="show('devolucoes');listarDevolucoes()"><div class="emoji">📤</div><strong>Devoluções</strong><span>Registros separados por causa</span></button>
 </div>
 <div class="panel" style="margin-top:18px">
 <p class="small">PRODUTOS REGISTRADOS</p><div class="stat" id="totalHome">0</div>
@@ -89,7 +89,7 @@ canvas{max-width:100%}
 <label>Divergência</label>
 <select id="divergencia"><option>Sem divergência</option><option>Falta</option><option>Sobra</option><option>Avaria</option><option>Validade</option><option>Outro</option></select>
 <button class="primary" onclick="adicionar()">＋ Adicionar produto</button>
-<p class="small">Produtos novos são adicionados automaticamente ao cadastro quando você os inclui na conferência.</p>
+<p class="small">Produtos novos são adicionados automaticamente ao cadastro.</p>
 </div>
 <div class="panel">
 <strong>Produtos desta conferência</strong>
@@ -135,57 +135,55 @@ canvas{max-width:100%}
 <p class="small">Os dados ficam armazenados neste navegador/celular. Faça exportações de segurança regularmente.</p>
 </section>
 
-<!-- MÓDULO DE DEVOLUÇÕES -->
 <section id="devolucoes" class="hidden">
 <button class="back" onclick="show('home')">← Voltar ao início</button>
 <h2>📤 Devoluções</h2>
+<p class="small">ESCOLHA A CAUSA PARA CONSULTAR OU LANÇAR</p>
+
+<button class="folder" onclick="abrirCausa('Causa 5 - Vencimento')">
+<span class="emoji">📅</span><span><strong>CAUSA 5 – VENCIMENTO</strong><small>Produtos vencidos</small></span>
+</button>
+<button class="folder" onclick="abrirCausa('Causa 2 - Produtos danificados/consumidos')">
+<span class="emoji">📦</span><span><strong>CAUSA 2 – AVARIAS</strong><small>Produtos danificados ou consumidos</small></span>
+</button>
+<button class="folder" onclick="abrirCausa('FLV')">
+<span class="emoji">🥬</span><span><strong>FLV</strong><small>Frutas, legumes e verduras</small></span>
+</button>
+
 <div class="panel">
-<p class="small">REGISTRO DE PRODUTOS PARA DEVOLUÇÃO AO FORNECEDOR</p>
-<button class="primary" onclick="novaDevolucao()">＋ Nova devolução</button>
-</div>
-<div class="panel">
-<strong>Histórico de devoluções</strong>
-<label style="display:block;margin-top:15px">Filtrar por motivo</label>
-<select id="filtroDevolucao" onchange="listarDevolucoes()">
-<option value="">Todos os motivos</option>
-<option value="Causa 5 - Vencimento">Causa 5 - Vencimento</option>
-<option value="Causa 2 - Produtos danificados/consumidos">Causa 2 - Produtos danificados/consumidos</option>
-<option value="FLV">FLV</option>
-</select>
+<strong id="tituloHistorico">Histórico de devoluções</strong>
 <div id="listaDevolucoes"></div>
-<button class="secondary" onclick="exportarDevolucoes()">⬇ Exportar devoluções CSV</button>
+<button class="secondary" onclick="exportarDevolucoes()">⬇ Exportar histórico CSV</button>
 </div>
 </section>
 
 <section id="novaDevolucao" class="hidden">
-<button class="back" onclick="show('devolucoes');listarDevolucoes()">← Voltar às devoluções</button>
-<h2>Nova devolução</h2>
+<button class="back" onclick="show('historicoCausa');listarDevolucoes()">← Voltar ao histórico</button>
+<h2 id="tituloNovaDevolucao">Nova devolução</h2>
 <div class="panel">
-<label>Data</label>
-<input id="devData" type="date">
+<label>Data</label><input id="devData" type="date">
 <label>Código de barras</label>
 <input id="devCodigo" placeholder="Bipe ou digite o código" inputmode="numeric" oninput="buscarCadastroDevolucao()">
 <button class="secondary" onclick="abrirLeitor('devCodigo')">📷 Bipar código de barras</button>
 <div id="devStatusCodigo" class="small"></div>
-<label>Descrição do produto</label>
-<input id="devDescricao" placeholder="Descrição do produto">
-<label>Quantidade</label>
-<input id="devQuantidade" type="number" min="0" step="any" placeholder="Quantidade a devolver">
-<label>Fornecedor</label>
-<input id="devFornecedor" placeholder="Nome do fornecedor">
-<label>Motivo da devolução</label>
-<select id="devMotivo">
-<option value="">Selecione o motivo</option>
-<option>Causa 5 - Vencimento</option>
-<option>Causa 2 - Produtos danificados/consumidos</option>
-<option>FLV</option>
-</select>
-<label>Foto do produto (opcional)</label>
-<input id="devFoto" type="file" accept="image/*" capture="environment">
+<label>Descrição do produto</label><input id="devDescricao" placeholder="Descrição do produto">
+<label>Quantidade</label><input id="devQuantidade" type="number" min="0" step="any" placeholder="Quantidade a devolver">
+<label>Fornecedor</label><input id="devFornecedor" placeholder="Nome do fornecedor">
+<label>Foto do produto (opcional)</label><input id="devFoto" type="file" accept="image/*" capture="environment">
 <p class="small">Você pode tirar uma foto ou escolher uma imagem do celular.</p>
-<label>Responsável</label>
-<input id="devResponsavel" placeholder="Nome de quem está registrando">
+<label>Responsável</label><input id="devResponsavel" placeholder="Nome de quem está registrando">
 <button class="primary" onclick="salvarDevolucao()">SALVAR DEVOLUÇÃO</button>
+</div>
+</section>
+
+<section id="historicoCausa" class="hidden">
+<button class="back" onclick="show('devolucoes');listarDevolucoes()">← Voltar às causas</button>
+<h2 id="tituloCausa">Histórico</h2>
+<div class="panel">
+<strong>Registros desta causa</strong>
+<div id="listaCausa"></div>
+<button class="primary" onclick="novaDevolucao()">＋ Nova devolução nesta causa</button>
+<button class="secondary" onclick="exportarCausa()">⬇ Exportar esta causa CSV</button>
 </div>
 </section>
 </main>
@@ -203,7 +201,7 @@ canvas{max-width:100%}
 
 <script>
 const CHAVE='produtos226',CHAVE_CATALOGO='catalogoProdutos226',CHAVE_DEV='devolucoes226';
-let dados=[],catalogo=[],devolucoes=[],pendentes=[],notaSelecionada='',scanner=null,alvoScanner='codigo';
+let dados=[],catalogo=[],devolucoes=[],pendentes=[],notaSelecionada='',scanner=null,alvoScanner='codigo',causaAtual='';
 
 try{let s=JSON.parse(localStorage.getItem(CHAVE)||'[]');dados=Array.isArray(s)?s:[]}catch(e){dados=[]}
 try{let c=JSON.parse(localStorage.getItem(CHAVE_CATALOGO)||'[]');catalogo=Array.isArray(c)?c:[]}catch(e){catalogo=[]}
@@ -212,13 +210,10 @@ try{let d=JSON.parse(localStorage.getItem(CHAVE_DEV)||'[]');devolucoes=Array.isA
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 dados.forEach(p=>{if(!p.id)p.id=uid()});
 localStorage.setItem(CHAVE,JSON.stringify(dados));
-
 function escapar(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-
 function show(t){
-['home','nova','notas','detalheNota','produtos','relatorios','devolucoes','novaDevolucao'].forEach(x=>document.getElementById(x).classList.add('hidden'));
-document.getElementById(t).classList.remove('hidden');
-window.scrollTo(0,0);
+['home','nova','notas','detalheNota','produtos','relatorios','devolucoes','novaDevolucao','historicoCausa'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+document.getElementById(t).classList.remove('hidden');window.scrollTo(0,0);
 }
 function valor(id){return document.getElementById(id).value.trim()}
 function salvar(){
@@ -228,9 +223,7 @@ localStorage.setItem(CHAVE_DEV,JSON.stringify(devolucoes));
 atualizar();
 }
 function gruposNotas(){
-let g={};
-dados.forEach(p=>{let k=String(p.nota||'Sem número de nota');(g[k]??=[]).push(p)});
-return g;
+let g={};dados.forEach(p=>{let k=String(p.nota||'Sem número de nota');(g[k]??=[]).push(p)});return g;
 }
 function atualizar(){
 document.getElementById('totalHome').textContent=dados.length;
@@ -239,18 +232,16 @@ document.getElementById('catalogoHome').textContent=catalogo.length;
 document.getElementById('totalDevolucoesHome').textContent=devolucoes.length;
 }
 function buscarCadastro(){
-let cod=valor('codigo'),p=catalogo.find(x=>String(x.codigo)===cod);
-let st=document.getElementById('statusCodigo');
+let cod=valor('codigo'),p=catalogo.find(x=>String(x.codigo)===cod),st=document.getElementById('statusCodigo');
 if(p){document.getElementById('descricao').value=p.descricao;st.textContent='✓ Produto encontrado no cadastro: '+p.descricao}
-else if(cod){st.textContent='Produto ainda não cadastrado. Informe a descrição para cadastrá-lo.'}
+else if(cod)st.textContent='Produto ainda não cadastrado. Informe a descrição para cadastrá-lo.';
 else st.textContent='';
 }
 function salvarNoCatalogo(c,d){
 if(!c||!d)return;
 let i=catalogo.findIndex(x=>String(x.codigo)===String(c));
 if(i>=0)catalogo[i].descricao=d;else catalogo.push({codigo:c,descricao:d});
-localStorage.setItem(CHAVE_CATALOGO,JSON.stringify(catalogo));
-atualizar();
+localStorage.setItem(CHAVE_CATALOGO,JSON.stringify(catalogo));atualizar();
 }
 function adicionar(){
 let encarregado=valor('encarregado'),nota=valor('nota'),fornecedor=valor('fornecedor'),data=valor('data'),codigo=valor('codigo'),descricao=valor('descricao'),quantidade=valor('quantidade'),divergencia=valor('divergencia');
@@ -265,12 +256,11 @@ let qtdAtual=Number(String(existente.quantidade||'0').replace(',','.'))||0;
 existente.quantidade=String(qtdAtual+qtdNova);
 let divs=[...new Set([existente.divergencia,divergencia].filter(x=>x&&x!=='Sem divergência'))];
 existente.divergencia=divs.length?divs.join(' / '):'Sem divergência';
-if(descricao)existente.descricao=descricao;
-}else{pendentes.push({id:uid(),encarregado,nota,fornecedor,data,codigo,descricao,quantidade:String(qtdNova),divergencia})}
+existente.descricao=descricao;
+}else pendentes.push({id:uid(),encarregado,nota,fornecedor,data,codigo,descricao,quantidade:String(qtdNova),divergencia});
 salvarNoCatalogo(codigo,descricao);
 ['codigo','descricao','quantidade'].forEach(x=>document.getElementById(x).value='');
-document.getElementById('statusCodigo').textContent='';
-mostrarPendentes();
+document.getElementById('statusCodigo').textContent='';mostrarPendentes();
 }
 function mostrarPendentes(){
 document.getElementById('itensNovos').innerHTML=pendentes.length?pendentes.map((p,i)=>`<div class="item"><strong>${escapar(p.descricao)}</strong><br>Código: ${escapar(p.codigo||'-')}<br>Quantidade total: <strong>${escapar(p.quantidade)}</strong><br><span class="small">${escapar(p.divergencia)}</span><br><button class="danger" onclick="removerPendente(${i})">Excluir</button></div>`).join(''):'Nenhum produto adicionado.';
@@ -291,8 +281,7 @@ return `<button class="folder" onclick="abrirNota('${escapar(n).replace(/'/g,"\\
 }).join(''):'<div class="panel">Nenhuma nota fiscal cadastrada.</div>';
 }
 function abrirNota(n){
-notaSelecionada=n;
-let itens=gruposNotas()[n]||[],p=itens[0]||{};
+notaSelecionada=n;let itens=gruposNotas()[n]||[],p=itens[0]||{};
 document.getElementById('tituloNota').textContent='Nota fiscal: '+n;
 document.getElementById('dadosNota').innerHTML=`<strong>Fornecedor:</strong> ${escapar(p.fornecedor||'-')}<br><strong>Data:</strong> ${escapar(p.data||'-')}<br><strong>Encarregado:</strong> ${escapar(p.encarregado||'Não informado')}<br><strong>Total de produtos:</strong> ${itens.length}`;
 document.getElementById('produtosNota').innerHTML=itens.map(x=>`<div class="item"><strong>${escapar(x.descricao)}</strong><br>Código: ${escapar(x.codigo||'-')}<br>Quantidade: ${escapar(x.quantidade)}<br>Divergência: ${escapar(x.divergencia||'-')}<br><button class="edit" onclick="editarProduto('${x.id}')">Editar</button><button class="danger" onclick="excluirProduto('${x.id}')">Excluir</button></div>`).join('');
@@ -343,14 +332,10 @@ function exportarTudo(){
 baixarCSV(dados,'relatorio_geral_loja226.csv',['Nota fiscal','Fornecedor','Data','Encarregado','Código','Descrição','Quantidade','Divergência'],dados.map(p=>[p.nota,p.fornecedor,p.data,p.encarregado||'Não informado',p.codigo,p.descricao,p.quantidade,p.divergencia]));
 }
 function imagemCanvas(titulo,linhas,nome){
-let c=document.createElement('canvas'),ctx=c.getContext('2d');
-c.width=1000;c.height=Math.max(500,220+linhas.length*58);
-ctx.fillStyle='#f4f5f7';ctx.fillRect(0,0,c.width,c.height);
-ctx.fillStyle='#c90018';ctx.fillRect(0,0,c.width,140);
-ctx.fillStyle='white';ctx.font='bold 42px Arial';ctx.fillText('DIA CONFERÊNCIA',45,62);
-ctx.font='24px Arial';ctx.fillText('LOJA 226',45,105);
-ctx.fillStyle='#222';ctx.font='bold 34px Arial';ctx.fillText(titulo,45,205);
-let y=270;ctx.font='25px Arial';
+let c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=1000;c.height=Math.max(500,220+linhas.length*58);
+ctx.fillStyle='#f4f5f7';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#c90018';ctx.fillRect(0,0,c.width,140);
+ctx.fillStyle='white';ctx.font='bold 42px Arial';ctx.fillText('DIA CONFERÊNCIA',45,62);ctx.font='24px Arial';ctx.fillText('LOJA 226',45,105);
+ctx.fillStyle='#222';ctx.font='bold 34px Arial';ctx.fillText(titulo,45,205);let y=270;ctx.font='25px Arial';
 linhas.forEach(l=>{ctx.fillStyle='white';ctx.fillRect(35,y-34,930,48);ctx.fillStyle='#222';ctx.fillText(String(l).slice(0,65),55,y);y+=58});
 ctx.fillStyle='#888';ctx.font='18px Arial';ctx.fillText('Gerado pelo DIA CONFERÊNCIA • LOJA 226',45,c.height-25);
 let a=document.createElement('a');a.download=nome;a.href=c.toDataURL('image/png');a.click();
@@ -365,100 +350,89 @@ let linhas=[`Nota fiscal: ${notaSelecionada}`,`Fornecedor: ${it[0]?.fornecedor||
 imagemCanvas('Resumo da nota',linhas,'nota_'+notaSelecionada+'.png');
 }
 
-/* FUNÇÕES DO MÓDULO DE DEVOLUÇÕES */
-function novaDevolucao(){
-document.getElementById('devData').value=new Date().toLocaleDateString('en-CA');
-['devCodigo','devDescricao','devQuantidade','devFornecedor','devResponsavel'].forEach(id=>document.getElementById(id).value='');
-document.getElementById('devMotivo').value='';
-document.getElementById('devFoto').value='';
-document.getElementById('devStatusCodigo').textContent='';
-show('novaDevolucao');
+/* DEVOLUÇÕES SEPARADAS POR CAUSA */
+function abrirCausa(causa){
+causaAtual=causa;
+document.getElementById('tituloCausa').textContent=causa;
+document.getElementById('tituloHistorico').textContent='Histórico de devoluções';
+listarCausa();
+show('historicoCausa');
 }
-function buscarCadastroDevolucao(){
-let cod=valor('devCodigo'),p=catalogo.find(x=>String(x.codigo)===cod);
-let st=document.getElementById('devStatusCodigo');
-if(p){document.getElementById('devDescricao').value=p.descricao;st.textContent='✓ Produto encontrado no cadastro: '+p.descricao}
-else if(cod){st.textContent='Produto não cadastrado. Informe a descrição.'}
-else st.textContent='';
+function listarCausa(){
+let lista=devolucoes.filter(p=>p.motivo===causaAtual);
+document.getElementById('tituloCausa').textContent=causaAtual+' • '+lista.length+' registro(s)';
+document.getElementById('listaCausa').innerHTML=lista.length?lista.map(p=>cartaoDevolucao(p)).join(''):'<p class="small">Nenhuma devolução registrada nesta causa.</p>';
 }
-async function salvarDevolucao(){
-let data=valor('devData'),codigo=valor('devCodigo'),descricao=valor('devDescricao'),quantidade=valor('devQuantidade'),fornecedor=valor('devFornecedor'),motivo=valor('devMotivo'),responsavel=valor('devResponsavel');
-if(!data||!descricao||!quantidade||!fornecedor||!motivo||!responsavel){
-alert('Preencha data, descrição, quantidade, fornecedor, motivo e responsável.');return;
-}
-let qtd=Number(String(quantidade).replace(',','.'));
-if(!Number.isFinite(qtd)||qtd<=0){alert('Informe uma quantidade válida maior que zero.');return}
-let fotoInput=document.getElementById('devFoto');
-let foto='';
-if(fotoInput.files&&fotoInput.files[0]){
-let arquivo=fotoInput.files[0];
-if(arquivo.size>2*1024*1024){alert('A foto deve ter no máximo 2 MB. Escolha uma imagem menor.');return}
-try{foto=await new Promise((resolve,reject)=>{
-let reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(arquivo);
-})}catch(e){alert('Não foi possível carregar a foto.');return}
-}
-let registro={id:uid(),data,codigo,descricao,quantidade:String(qtd),fornecedor,motivo,foto,responsavel};
-devolucoes.unshift(registro);
-salvarNoCatalogo(codigo,descricao);
-salvar();
-alert('Devolução registrada com sucesso!');
-show('devolucoes');listarDevolucoes();
-}
-function listarDevolucoes(){
-let filtro=document.getElementById('filtroDevolucao')?.value||'';
-let lista=devolucoes.filter(p=>!filtro||p.motivo===filtro);
-document.getElementById('listaDevolucoes').innerHTML=lista.length?lista.map(p=>`
-<div class="item">
+function cartaoDevolucao(p){
+return `<div class="item">
 <strong>${escapar(p.descricao)}</strong><br>
 Código: ${escapar(p.codigo||'-')}<br>
 Quantidade: ${escapar(p.quantidade)}<br>
 Fornecedor: ${escapar(p.fornecedor)}<br>
-Motivo: <strong>${escapar(p.motivo)}</strong><br>
 Data: ${escapar(p.data)}<br>
 Responsável: ${escapar(p.responsavel)}
 ${p.foto?`<br><img class="foto-mini" src="${p.foto}" alt="Foto do produto">`:''}
 <br><button class="danger" onclick="excluirDevolucao('${p.id}')">Excluir registro</button>
-</div>`).join(''):'<p class="small">Nenhuma devolução encontrada.</p>';
+</div>`;
+}
+function novaDevolucao(){
+if(!causaAtual){alert('Primeiro escolha uma causa.');return}
+document.getElementById('devData').value=new Date().toLocaleDateString('en-CA');
+['devCodigo','devDescricao','devQuantidade','devFornecedor','devResponsavel'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('devFoto').value='';
+document.getElementById('devStatusCodigo').textContent='';
+document.getElementById('tituloNovaDevolucao').textContent='Nova devolução • '+causaAtual;
+show('novaDevolucao');
+}
+function buscarCadastroDevolucao(){
+let cod=valor('devCodigo'),p=catalogo.find(x=>String(x.codigo)===cod),st=document.getElementById('devStatusCodigo');
+if(p){document.getElementById('devDescricao').value=p.descricao;st.textContent='✓ Produto encontrado no cadastro: '+p.descricao}
+else if(cod)st.textContent='Produto não cadastrado. Informe a descrição.';
+else st.textContent='';
+}
+async function salvarDevolucao(){
+let data=valor('devData'),codigo=valor('devCodigo'),descricao=valor('devDescricao'),quantidade=valor('devQuantidade'),fornecedor=valor('devFornecedor'),responsavel=valor('devResponsavel');
+if(!data||!descricao||!quantidade||!fornecedor||!responsavel){alert('Preencha data, descrição, quantidade, fornecedor e responsável.');return}
+let qtd=Number(String(quantidade).replace(',','.'));
+if(!Number.isFinite(qtd)||qtd<=0){alert('Informe uma quantidade válida maior que zero.');return}
+let fotoInput=document.getElementById('devFoto'),foto='';
+if(fotoInput.files&&fotoInput.files[0]){
+let arquivo=fotoInput.files[0];
+if(arquivo.size>2*1024*1024){alert('A foto deve ter no máximo 2 MB. Escolha uma imagem menor.');return}
+try{foto=await new Promise((resolve,reject)=>{let reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(arquivo)})}
+catch(e){alert('Não foi possível carregar a foto.');return}
+}
+let registro={id:uid(),data,codigo,descricao,quantidade:String(qtd),fornecedor,motivo:causaAtual,foto,responsavel};
+devolucoes.unshift(registro);salvarNoCatalogo(codigo,descricao);salvar();
+alert('Devolução registrada com sucesso!');
+show('historicoCausa');listarCausa();
+}
+function listarDevolucoes(){
+let total=devolucoes.length;
+document.getElementById('listaDevolucoes').innerHTML=`<p class="small">Total geral: ${total} registro(s). Escolha uma causa acima para ver os lançamentos separados.</p>`;
 }
 function excluirDevolucao(id){
 if(!confirm('Deseja excluir esta devolução?'))return;
-devolucoes=devolucoes.filter(p=>p.id!==id);
-salvar();listarDevolucoes();
+devolucoes=devolucoes.filter(p=>p.id!==id);salvar();listarCausa();
 }
-function exportarDevolucoes(){
-let filtro=document.getElementById('filtroDevolucao')?.value||'';
-let lista=devolucoes.filter(p=>!filtro||p.motivo===filtro);
-baixarCSV(lista,'devolucoes_loja226.csv',
-['Data','Código de barras','Descrição','Quantidade','Fornecedor','Motivo da devolução','Responsável','Possui foto'],
-lista.map(p=>[p.data,p.codigo,p.descricao,p.quantidade,p.fornecedor,p.motivo,p.responsavel,p.foto?'Sim':'Não']));
+function exportarLista(lista,nome){
+baixarCSV(lista,nome,['Data','Código de barras','Descrição','Quantidade','Fornecedor','Motivo da devolução','Responsável','Possui foto'],lista.map(p=>[p.data,p.codigo,p.descricao,p.quantidade,p.fornecedor,p.motivo,p.responsavel,p.foto?'Sim':'Não']));
 }
+function exportarCausa(){
+let lista=devolucoes.filter(p=>p.motivo===causaAtual);
+let nome=causaAtual.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+exportarLista(lista,'devolucoes_'+nome+'_loja226.csv');
+}
+function exportarDevolucoes(){exportarLista(devolucoes,'devolucoes_loja226.csv')}
 
 /* LEITOR DE CÓDIGO DE BARRAS */
 async function abrirLeitor(alvo='codigo'){
 if(!window.Html5Qrcode){alert('Não foi possível carregar o leitor. Verifique sua conexão com a internet e tente novamente.');return}
-alvoScanner=alvo;
-document.getElementById('modalLeitor').classList.remove('hidden');
-scanner=new Html5Qrcode('leitor');
+alvoScanner=alvo;document.getElementById('modalLeitor').classList.remove('hidden');scanner=new Html5Qrcode('leitor');
 try{
-await scanner.start({facingMode:'environment'},
-{fps:10,qrbox:{width:260,height:150},formatsToSupport:[
-Html5QrcodeSupportedFormats.EAN_13,
-Html5QrcodeSupportedFormats.EAN_8,
-Html5QrcodeSupportedFormats.UPC_A,
-Html5QrcodeSupportedFormats.UPC_E,
-Html5QrcodeSupportedFormats.CODE_128,
-Html5QrcodeSupportedFormats.ITF
-]},
-txt=>{
-document.getElementById(alvoScanner).value=txt;
-if(alvoScanner==='codigo')buscarCadastro();
-if(alvoScanner==='devCodigo')buscarCadastroDevolucao();
-fecharLeitor();
-},()=>{});
-}catch(e){
-alert('Não consegui abrir a câmera. Confira a permissão de câmera do Safari e tente novamente.');
-fecharLeitor();
-}
+await scanner.start({facingMode:'environment'},{fps:10,qrbox:{width:260,height:150},formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.ITF]},
+txt=>{document.getElementById(alvoScanner).value=txt;if(alvoScanner==='codigo')buscarCadastro();if(alvoScanner==='devCodigo')buscarCadastroDevolucao();fecharLeitor()},()=>{});
+}catch(e){alert('Não consegui abrir a câmera. Confira a permissão de câmera do Safari e tente novamente.');fecharLeitor()}
 }
 async function fecharLeitor(){
 if(scanner){try{if(scanner.isScanning)await scanner.stop();scanner.clear()}catch(e){}scanner=null}
