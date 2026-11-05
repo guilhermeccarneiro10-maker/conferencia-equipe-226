@@ -54,3 +54,12 @@ async function abrirLeitor(){if(!window.Html5Qrcode){alert('Não foi possível c
 async function fecharLeitor(){if(scanner){try{if(scanner.isScanning)await scanner.stop();scanner.clear()}catch(e){}scanner=null}document.getElementById('modalLeitor').classList.add('hidden')}
 atualizar();
 </script></body></html>
+
+
+<button class="card" onclick="show('relatorios');atualizarRelatorios()"><div class="emoji">📊</div><strong>Relatórios</strong><span>Exportar resultados</span></button>
+
+<button class="card" onclick="show('devolucoes');listarDevolucoes()">
+<div class="emoji">📤</div>
+<strong>Devoluções</strong>
+<span>Registrar produtos para devolução</span>
+</button>
